@@ -1,4 +1,4 @@
-# Defs bij afsprakenset Centrale Examens VO (CEVO)
+# Defs bij afsprakenset "Centrale Examens VO (CEVO)"
 De OAS3-definities (Defs) in YAML-bestand "cevo-openapi.yaml" zijn bedoeld voor de REST API t.b.v. Centrale Examens VO voor schooljaar 2021-2022 (examenregime 2022).
 
 Iedere publicatie van dit YAML-bestand voor de cevoketen in het schooljaar 2021-2022 is een getagde versie en is beschikbaar onder releases: https://github.com/JosVanderArend/cevo/releases. 
