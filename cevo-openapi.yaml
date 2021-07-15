@@ -2,13 +2,13 @@
 openapi: 3.0.0
 info:
   title: Centrale-Examens-VO
-  description: OAS3-definities op 26 april 2021 via Imvertor automatisch gegenereerd uit de modellen van de berichtenspecificatie als versie 01.01.04.
+  description: OAS3-definities op 7 juni 2021 gemaakt na e-mail discussie en overeenstemming op 1 juni 2021.
   contact:
     url: https://github.com/edustandaard/Centrale-Examens-VO
   license:
     name: European Union Public License, version 1.2 (EUPL-1.2)
     url: https://eupl.eu/1.2/nl/
-  version: 01.01.04
+  version: 01.01.05
   x-imvertor-generator-version: 1.64.0
   x-yamlCompiler-stylesheets-version: "20191021"
 servers:
@@ -42,6 +42,14 @@ paths:
         schema:
           type: string
           example: "00"
+      - name: sector
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/OnderwijsSector'
+        example: VO
       - name: edu-to
         in: query
         description: Dit geeft aan namens welke organisatie Facet het verzoekbericht ontvangt. Dit is in dit geval het OIN van de school. De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -261,6 +269,14 @@ paths:
       - Facet
       operationId: postafnamegroepen
       parameters:
+      - name: sector
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/OnderwijsSector'
+        example: VO
       - name: edu-to
         in: query
         description: Dit geeft aan namens welke organisatie Facet het verzoekbericht ontvangt. Dit is in dit geval het OIN van de school. De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -495,6 +511,14 @@ paths:
         schema:
           type: string
         example: afnamegroep-abc123
+      - name: sector
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/OnderwijsSector'
+        example: VO
       - name: edu-to
         in: query
         description: Dit geeft aan namens welke organisatie Facet het verzoekbericht ontvangt. Dit is in dit geval het OIN van de school. De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -737,6 +761,14 @@ paths:
         schema:
           type: string
         example: afnamegroep-abc123
+      - name: sector
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/OnderwijsSector'
+        example: VO
       - name: edu-to
         in: query
         description: Dit geeft aan namens welke organisatie Facet het verzoekbericht ontvangt. Dit is in dit geval het OIN van de school. De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -798,6 +830,14 @@ paths:
         schema:
           type: string
         example: afnamegroep-abc123
+      - name: sector
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/OnderwijsSector'
+        example: VO
       - name: edu-to
         in: query
         description: Dit geeft aan namens welke organisatie Facet het verzoekbericht ontvangt. Dit is in dit geval het OIN van de school. De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -1040,6 +1080,14 @@ paths:
         schema:
           type: string
           example: "00"
+      - name: sector
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/OnderwijsSector'
+        example: VO
       - name: edu-to
         in: query
         description: Dit geeft aan namens welke organisatie Facet het verzoekbericht ontvangt. Dit is in dit geval het OIN van de school. De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -1268,6 +1316,14 @@ paths:
         schema:
           type: string
         example: afnameleider-abc123
+      - name: sector
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/OnderwijsSector'
+        example: VO
       - name: edu-to
         in: query
         description: Dit geeft aan namens welke organisatie Facet het verzoekbericht ontvangt. Dit is in dit geval het OIN van de school. De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -2203,17 +2259,17 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /examens/{id}/resultatenscores:
+  /resultatenscores:
     get:
       tags:
       - Facet
       operationId: getcollectionexamensIdresultatenscores
       parameters:
-      - name: id
-        in: path
+      - name: examenid
+        in: query
         required: true
-        style: simple
-        explode: false
+        style: form
+        explode: true
         schema:
           type: string
         example: examen-abc123
@@ -2934,8 +2990,8 @@ paths:
     post:
       tags:
       - LAS
+      description: <body><p>Notificatie over scores en resultaten. Let op, wordt alleen verstuurd als de score wijzigt (dus niet op moment van publicatie van N-termen alle cijfers berekend en toegevoegd worden).</p></body>
       operationId: postresultatenscoresnotificaties
-      description: "<body><p>Notificatie over scores en resultaten. Let op, wordt alleen verstuurd als de score wijzigt (dus niet op moment van publicatie van N-termen alle cijfers berekend en toegevoegd worden).</p></body>"
       parameters:
       - name: brin4
         in: query
@@ -3203,13 +3259,11 @@ components:
         afnameleider:
           title: afnameleider
           type: string
-          format: uri
-          example: http://purl.edustandaard.nl/api/v1/afnameleiders/afnameleider-abc123
+          example: afnameleider-abc123
         examen:
           title: examen
           type: string
-          format: uri
-          example: http://purl.edustandaard.nl/api/v1/examens/examen-abc123
+          example: examen-abc123
       description: <body><p>Verzameling van gegevens bij een afnamegroep.</p></body>
     Afnameleider:
       required:
@@ -3318,8 +3372,7 @@ components:
           isvariantvan:
             title: isvariantvan
             type: string
-            format: uri
-            example: http://purl.edustandaard.nl/api/v1/examens/examen-abc123
+            example: examen-abc123
         description: <body><p>Materiaal dat gebruikt wordt bij het bepalen van de voortgang in ontwikkeling van de kennis en competenties van een onderwijsvolger.</p></body>
     Resultatenscores:
       required:
@@ -3353,13 +3406,11 @@ components:
         examenvariant:
           title: examenvariant
           type: string
-          format: uri
-          example: http://purl.edustandaard.nl/api/v1/examenvarianten/examenvariant-abc123
+          example: examenvariant-abc123
         examen:
           title: examen
           type: string
-          format: uri
-          example: http://purl.edustandaard.nl/api/v1/examens/examen-abc123
+          example: examen-abc123
       description: <body><p>Verzameltype voor scores en resultaten uit afnames voor een enkele afname van toetsen, oefeningen en examens.</p></body>
     Resultatenscoresnotificatie:
       required:
@@ -3369,8 +3420,7 @@ components:
         examen:
           title: examen
           type: string
-          format: uri
-          example: http://purl.edustandaard.nl/api/v1/examens/examen-abc123
+          example: examen-abc123
     Afname:
       required:
       - id
