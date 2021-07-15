@@ -2,13 +2,13 @@
 openapi: 3.0.0
 info:
   title: Centrale-Examens-VO
-  description: OAS3-definities op 7 juni 2021 gemaakt na e-mail discussie en overeenstemming op 1 juni 2021.
+  description: OAS3-definities op 10 juni 2021 gemaakt, ter correctie van versie 01.01.05.
   contact:
     url: https://github.com/edustandaard/Centrale-Examens-VO
   license:
     name: European Union Public License, version 1.2 (EUPL-1.2)
     url: https://eupl.eu/1.2/nl/
-  version: 01.01.05
+  version: 01.01.06
   x-imvertor-generator-version: 1.64.0
   x-yamlCompiler-stylesheets-version: "20191021"
 servers:
@@ -23,6 +23,14 @@ paths:
       - Facet
       operationId: getcollectiongroepen
       parameters:
+      - name: sector
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/OnderwijsSector'
+        example: VO
       - name: brin4
         in: query
         description: <body><p>BRIN4 identificatie van de school.</p></body><body><p>Het BRIN4 bestaat uit 2 cijfers gevolgd door 2 letters.</p></body>
@@ -42,14 +50,6 @@ paths:
         schema:
           type: string
           example: "00"
-      - name: sector
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          $ref: '#/components/schemas/OnderwijsSector'
-        example: VO
       - name: edu-to
         in: query
         description: Dit geeft aan namens welke organisatie Facet het verzoekbericht ontvangt. Dit is in dit geval het OIN van de school. De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -1061,6 +1061,14 @@ paths:
       - Facet
       operationId: getcollectionafnameleiders
       parameters:
+      - name: sector
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/OnderwijsSector'
+        example: VO
       - name: brin4
         in: query
         description: <body><p>BRIN4 identificatie van de school.</p></body><body><p>Het BRIN4 bestaat uit 2 cijfers gevolgd door 2 letters.</p></body>
@@ -1080,14 +1088,6 @@ paths:
         schema:
           type: string
           example: "00"
-      - name: sector
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          $ref: '#/components/schemas/OnderwijsSector'
-        example: VO
       - name: edu-to
         in: query
         description: Dit geeft aan namens welke organisatie Facet het verzoekbericht ontvangt. Dit is in dit geval het OIN van de school. De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -2273,6 +2273,14 @@ paths:
         schema:
           type: string
         example: examen-abc123
+      - name: sector
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/OnderwijsSector'
+        example: VO
       - name: brin4
         in: query
         description: <body><p>BRIN4 identificatie van de school.</p></body><body><p>Het BRIN4 bestaat uit 2 cijfers gevolgd door 2 letters.</p></body>
@@ -3242,6 +3250,18 @@ components:
       - planningsgegevens
       type: object
       properties:
+        afnameleider:
+          title: afnameleider
+          minLength: 1
+          type: string
+          description: <body><p>Verwijzing naar de examenvariant van de afnamegroep.</p></body>
+          example: afnameleider-abc123
+        examen:
+          title: examen
+          minLength: 1
+          type: string
+          description: <body><p>Verwijzing naar het examen van de afnamegroep.</p></body>
+          example: examen-abc123
         examenkandidaat:
           type: array
           items:
@@ -3256,14 +3276,6 @@ components:
           $ref: '#/components/schemas/Onderwijsorganisatie'
         planningsgegevens:
           $ref: '#/components/schemas/Planningsgegevens'
-        afnameleider:
-          title: afnameleider
-          type: string
-          example: afnameleider-abc123
-        examen:
-          title: examen
-          type: string
-          example: examen-abc123
       description: <body><p>Verzameling van gegevens bij een afnamegroep.</p></body>
     Afnameleider:
       required:
@@ -3343,6 +3355,12 @@ components:
         properties:
           examencijferberekening:
             $ref: '#/components/schemas/Examencijferberekening'
+          isvariantvan:
+            title: isvariantvan
+            minLength: 1
+            type: string
+            description: <body><p>Verwijzing naar het examen van de examenvariant.</p></body>
+            example: examen-abc123
           naam:
             title: naam
             minLength: 1
@@ -3369,10 +3387,6 @@ components:
             minLength: 1
             type: string
             description: <body><p>Versie van de examenvariant.</p></body><body><p>De verzameling van waarden die gegevens van dit attribuutsoort kunnen hebben, dat wil zeggen het waardenbereik, uitgedrukt in een specifieke structuur.</p></body>
-          isvariantvan:
-            title: isvariantvan
-            type: string
-            example: examen-abc123
         description: <body><p>Materiaal dat gebruikt wordt bij het bepalen van de voortgang in ontwikkeling van de kennis en competenties van een onderwijsvolger.</p></body>
     Resultatenscores:
       required:
@@ -3383,6 +3397,18 @@ components:
       - score
       type: object
       properties:
+        examen:
+          title: examen
+          minLength: 1
+          type: string
+          description: <body><p>Verwijzing naar het examen van de resultatenscores.</p></body>
+          example: examen-abc123
+        examenvariant:
+          title: examenvariant
+          minLength: 1
+          type: string
+          description: <body><p>Verwijzing naar de examenvariant van de resultatenscores.</p></body>
+          example: examenvariant-abc123
         afnamecontext:
           $ref: '#/components/schemas/Afnamecontext'
         datumtijd:
@@ -3403,14 +3429,6 @@ components:
           $ref: '#/components/schemas/Resultaat'
         score:
           $ref: '#/components/schemas/Score'
-        examenvariant:
-          title: examenvariant
-          type: string
-          example: examenvariant-abc123
-        examen:
-          title: examen
-          type: string
-          example: examen-abc123
       description: <body><p>Verzameltype voor scores en resultaten uit afnames voor een enkele afname van toetsen, oefeningen en examens.</p></body>
     Resultatenscoresnotificatie:
       required:
@@ -3419,7 +3437,9 @@ components:
       properties:
         examen:
           title: examen
+          minLength: 1
           type: string
+          description: <body><p>Verwijzing naar het examen van de resultatenscores-notificatie.</p></body>
           example: examen-abc123
     Afname:
       required:
@@ -3499,7 +3519,7 @@ components:
           type: string
           description: <body><p>De tijdsperiode (begintijd en eindtijd) waarbinnen de afname kan worden gepland.</p></body><body><p>Een tijdsperiode uitgedrukt in begintijdstip en eindtijdstip gescheiden door slash, volgens ISO 8601, bijvoorbeeld 2021-03-24T09:00:00Z/2021-03-24T17:00:00Z.</p></body>
           format: date-time
-          example: "2021-03-24T09:00:00Z/2021-03-24T17:00:00Z"
+          example: 2021-03-22T10:29:00Z
         begintijdAfname:
           title: begintijdAfname
           type: string
