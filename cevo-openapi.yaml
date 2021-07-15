@@ -2,13 +2,13 @@
 openapi: 3.0.0
 info:
   title: Centrale-Examens-VO
-  description: OAS3-definities op 30 maart 2021 via Imvertor automatisch gegenereerd uit de modellen van de berichtenspecificatie.
+  description: OAS3-definities op 26 april 2021 via Imvertor automatisch gegenereerd uit de modellen van de berichtenspecificatie als versie 01.01.04.
   contact:
     url: https://github.com/edustandaard/Centrale-Examens-VO
   license:
     name: European Union Public License, version 1.2 (EUPL-1.2)
     url: https://eupl.eu/1.2/nl/
-  version: 01.01.03
+  version: 01.01.04
   x-imvertor-generator-version: 1.64.0
   x-yamlCompiler-stylesheets-version: "20191021"
 servers:
@@ -18,6 +18,244 @@ servers:
   description: LAS-leverancier Referentie-implementatie
 paths:
   /afnamegroepen:
+    get:
+      tags:
+      - Facet
+      operationId: getcollectiongroepen
+      parameters:
+      - name: brin4
+        in: query
+        description: <body><p>BRIN4 identificatie van de school.</p></body><body><p>Het BRIN4 bestaat uit 2 cijfers gevolgd door 2 letters.</p></body>
+        required: true
+        style: form
+        explode: true
+        schema:
+          pattern: ^[0-9]{2}[A-Z]{2}$
+          type: string
+          example: 99XX
+      - name: volgnummer
+        in: query
+        description: <body><p>Volgnummer dat wordt gebruikt om een onderverdeling binnen de BRIN4 aan te duiden. Er mag aan dit volgnummer geen betekenis worden gegeven.</p></body><body><p>Dit volgnummer (BRIN-vestigingsvolgnummer) bestaat uit 2 cijfers.</p></body>
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: "00"
+      - name: edu-to
+        in: query
+        description: Dit geeft aan namens welke organisatie Facet het verzoekbericht ontvangt. Dit is in dit geval het OIN van de school. De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
+        required: true
+        style: form
+        explode: false
+        schema:
+          pattern: ^(\d|\D){20}$
+          type: string
+        example: "00000007000116700000"
+      - name: edu-from
+        in: query
+        description: Dit geeft aan namens welke organisatie de LAS-leverancier het verzoekbericht verzendt. Dit is in dit geval het routeringskenmerk van de adminstratie van de school. De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
+        required: true
+        style: form
+        explode: false
+        schema:
+          pattern: ^(\d|\D){20}$
+          type: string
+        example: "00000007000116700534"
+      responses:
+        "200":
+          description: Zoekactie geslaagd
+          headers:
+            api-version:
+              $ref: '#/components/headers/api_version'
+            warning:
+              $ref: '#/components/headers/warning'
+            X-Rate-Limit-Limit:
+              $ref: '#/components/headers/X_Rate_Limit_Limit'
+            X-Rate-Limit-Remaining:
+              $ref: '#/components/headers/X_Rate_Limit_Remaining'
+            X-Rate-Limit-Reset:
+              $ref: '#/components/headers/X_Rate_Limit_Reset'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Afnamegroep'
+        "400":
+          description: Bad Request
+          headers:
+            api-version:
+              $ref: '#/components/headers/api_version'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/BadRequestFoutbericht'
+              example:
+                type: https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1
+                title: Ten minste één parameter moet worden opgegeven.
+                status: 400
+                detail: The request could not be understood by the server due to malformed syntax. The client SHOULD NOT repeat the request without modification.
+                instance: https://datapunt.voorbeeldschool.nl/api/v1/resourcenaam?parameter=waarde
+                code: paramsRequired
+                invalidParams:
+                - type: https://www.edustandaard.nl/amigo/api/validaties/integer
+                  name: score
+                  code: integer
+                  reason: Waarde is geen geldige integer.
+        "401":
+          description: Unauthorized
+          headers:
+            api-version:
+              $ref: '#/components/headers/api_version'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+              example:
+                type: https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2
+                title: Niet correct geauthenticeerd.
+                status: 401
+                detail: The request requires user authentication. The response MUST include a WWW-Authenticate header field (section 14.47) containing a challenge applicable to the requested resource.
+                instance: https://datapunt.voorbeeldschool.nl/api/v1/resourcenaam?parameter=waarde
+                code: authentication
+        "403":
+          description: Forbidden
+          headers:
+            api-version:
+              $ref: '#/components/headers/api_version'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+              example:
+                type: https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4
+                title: U bent niet geautoriseerd voor deze operatie.
+                status: 403
+                detail: The server understood the request, but is refusing to fulfill it.
+                instance: https://datapunt.voorbeeldschool.nl/api/v1/resourcenaam?parameter=waarde
+                code: autorisation
+        "409":
+          description: Conflict
+          headers:
+            api-version:
+              $ref: '#/components/headers/api_version'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+              example:
+                type: https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.10
+                title: Conflict
+                status: 409
+                detail: The request could not be completed due to a conflict with the current state of the resource
+                instance: https://datapunt.voorbeeldschool.nl/api/v1/resourcenaam?parameter=waarde
+                code: conflict
+        "410":
+          description: Gone
+          headers:
+            api-version:
+              $ref: '#/components/headers/api_version'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+              example:
+                type: https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.11
+                title: Gone
+                status: 410
+                detail: The request could not be completed due to a conflict with the current state of the resource
+                instance: https://datapunt.voorbeeldschool.nl/api/v1/resourcenaam?parameter=waarde
+                code: gone
+        "415":
+          description: Unsupported Media Type
+          headers:
+            api-version:
+              $ref: '#/components/headers/api_version'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+              example:
+                type: https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.16
+                title: Unsupported Media Type
+                status: 415
+                detail: The server is refusing the request because the entity of the request is in a format not supported by the requested resource for the requested method.
+                instance: https://datapunt.voorbeeldschool.nl/api/v1/resourcenaam?parameter=waarde
+                code: unsupported
+        "429":
+          description: Too Many Requests
+          headers:
+            api-version:
+              $ref: '#/components/headers/api_version'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+              example:
+                type: https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+                title: Too many request
+                status: 429
+                detail: The user has sent too many requests in a given amount of time (rate limiting).
+                instance: https://datapunt.voorbeeldschool.nl/api/v1/resourcenaam?parameter=waarde
+                code: tooManyRequests
+        "500":
+          description: Internal Server Error
+          headers:
+            api-version:
+              $ref: '#/components/headers/api_version'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+              example:
+                type: https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1
+                title: Interne server fout.
+                status: 500
+                detail: The server encountered an unexpected condition which prevented it from fulfilling the request.
+                instance: https://datapunt.voorbeeldschool.nl/api/v1/resourcenaam?parameter=waarde
+                code: serverError
+        "501":
+          description: Not Implemented
+          headers:
+            api-version:
+              $ref: '#/components/headers/api_version'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+              example:
+                type: https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.2
+                title: Not Implemented
+                status: 501
+                detail: The server does not support the functionality required to fulfill the request.
+                instance: https://datapunt.voorbeeldschool.nl/api/v1/resourcenaam?parameter=waarde
+                code: notImplemented
+        "503":
+          description: Service Unavailable
+          headers:
+            api-version:
+              $ref: '#/components/headers/api_version'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+              example:
+                type: https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.4
+                title: Bronservice {bron} is tijdelijk niet beschikbaar.
+                status: 503
+                detail: The service is currently unable to handle the request due to a temporary overloading or maintenance of the server.
+                instance: https://datapunt.voorbeeldschool.nl/api/v1/resourcenaam?parameter=waarde
+                code: notAvailable
+        default:
+          description: Er is een onverwachte fout opgetreden
+          headers:
+            api-version:
+              $ref: '#/components/headers/api_version'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     post:
       tags:
       - Facet
@@ -801,7 +1039,7 @@ paths:
         explode: true
         schema:
           type: string
-          example: "0"
+          example: "00"
       - name: edu-to
         in: query
         description: Dit geeft aan namens welke organisatie Facet het verzoekbericht ontvangt. Dit is in dit geval het OIN van de school. De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -1290,7 +1528,7 @@ paths:
         schema:
           pattern: ^(\d|\D){20}$
           type: string
-        example: "00000007000112300001"
+          example: "00000007000112300001"
       - name: edu-from
         in: query
         description: Dit geeft aan namens welke organisatie de LAS-leverancier het verzoekbericht verzendt. Dit is in dit geval het OIN van de betreffende LAS-leverancier.  De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -1300,7 +1538,7 @@ paths:
         schema:
           pattern: ^(\d|\D){20}$
           type: string
-        example: "00000007000114500002"
+          example: "00000007000114500002"
       responses:
         "200":
           description: Zoekactie geslaagd
@@ -1518,7 +1756,7 @@ paths:
         schema:
           pattern: ^(\d|\D){20}$
           type: string
-        example: "00000007000112300001"
+          example: "00000007000112300001"
       - name: edu-from
         in: query
         description: Dit geeft aan namens welke organisatie de LAS-leverancier het verzoekbericht verzendt. Dit is in dit geval het OIN van de betreffende LAS-leverancier.  De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -1528,7 +1766,7 @@ paths:
         schema:
           pattern: ^(\d|\D){20}$
           type: string
-        example: "00000007000114500002"
+          example: "00000007000114500002"
       responses:
         "200":
           description: Zoekactie geslaagd
@@ -1760,7 +1998,7 @@ paths:
         schema:
           pattern: ^(\d|\D){20}$
           type: string
-        example: "00000007000112300001"
+          example: "00000007000112300001"
       - name: edu-from
         in: query
         description: Dit geeft aan namens welke organisatie de LAS-leverancier het verzoekbericht verzendt. Dit is in dit geval het OIN van de betreffende LAS-leverancier.  De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -1770,7 +2008,7 @@ paths:
         schema:
           pattern: ^(\d|\D){20}$
           type: string
-        example: "00000007000114500002"
+          example: "00000007000114500002"
       responses:
         "200":
           description: Zoekactie geslaagd
@@ -1988,7 +2226,7 @@ paths:
         schema:
           pattern: ^[0-9]{2}[A-Z]{2}$
           type: string
-        example: 99XX
+          example: 99XX
       - name: volgnummer
         in: query
         description: <body><p>Volgnummer dat wordt gebruikt om een onderverdeling binnen de BRIN4 aan te duiden. Er mag aan dit volgnummer geen betekenis worden gegeven.</p></body><body><p>Het volgnummer bestaat uit 2 cijfers.</p></body>
@@ -1997,7 +2235,7 @@ paths:
         explode: true
         schema:
           type: string
-        example: 0
+          example: "00"
       - name: edu-to
         in: query
         description: Dit geeft aan namens welke organisatie Facet het verzoekbericht ontvangt. Dit is in dit geval het OIN van de school. De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -2007,7 +2245,7 @@ paths:
         schema:
           pattern: ^(\d|\D){20}$
           type: string
-        example: "00000007000116700000"
+          example: "00000007000116700000"
       - name: edu-from
         in: query
         description: Dit geeft aan namens welke organisatie de LAS-leverancier het verzoekbericht verzendt. Dit is in dit geval het routeringskenmerk van de adminstratie van de school. De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -2017,7 +2255,7 @@ paths:
         schema:
           pattern: ^(\d|\D){20}$
           type: string
-        example: "00000007000116700534"
+          example: "00000007000116700534"
       responses:
         "200":
           description: Zoekactie geslaagd
@@ -2245,7 +2483,7 @@ paths:
         schema:
           pattern: ^(\d|\D){20}$
           type: string
-        example: "00000007000112300001"
+          example: "00000007000112300001"
       - name: edu-from
         in: query
         description: Dit geeft aan namens welke organisatie de LAS-leverancier het verzoekbericht verzendt. Dit is in dit geval het OIN van de betreffende LAS-leverancier.  De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -2255,7 +2493,7 @@ paths:
         schema:
           pattern: ^(\d|\D){20}$
           type: string
-        example: "00000007000114500002"
+          example: "00000007000114500002"
       responses:
         "200":
           description: Zoekactie geslaagd
@@ -2473,7 +2711,7 @@ paths:
         schema:
           pattern: ^(\d|\D){20}$
           type: string
-        example: "00000007000112300001"
+          example: "00000007000112300001"
       - name: edu-from
         in: query
         description: Dit geeft aan namens welke organisatie de LAS-leverancier het verzoekbericht verzendt. Dit is in dit geval het OIN van de betreffende LAS-leverancier.  De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -2483,7 +2721,7 @@ paths:
         schema:
           pattern: ^(\d|\D){20}$
           type: string
-        example: "00000007000114500002"
+          example: "00000007000114500002"
       responses:
         "200":
           description: Zoekactie geslaagd
@@ -2697,6 +2935,7 @@ paths:
       tags:
       - LAS
       operationId: postresultatenscoresnotificaties
+      description: "<body><p>Notificatie over scores en resultaten. Let op, wordt alleen verstuurd als de score wijzigt (dus niet op moment van publicatie van N-termen alle cijfers berekend en toegevoegd worden).</p></body>"
       parameters:
       - name: brin4
         in: query
@@ -2707,7 +2946,7 @@ paths:
         schema:
           pattern: ^[0-9]{2}[A-Z]{2}$
           type: string
-        example: 99XX
+          example: 99XX
       - name: volgnummer
         in: query
         description: <body><p>Volgnummer dat wordt gebruikt om een onderverdeling binnen de BRIN4 aan te duiden. Er mag aan dit volgnummer geen betekenis worden gegeven.</p></body><body><p>Het volgnummer bestaat uit 2 cijfers.</p></body>
@@ -2716,7 +2955,7 @@ paths:
         explode: true
         schema:
           type: string
-        example: 0
+        example: "00"
       - name: edu-to
         in: query
         description: Dit geeft aan namens welke organisatie de LAS-leverancier het bericht ontvangt. Dit is in dit geval het routeringskenmerk van de administratie van de betreffende school. Dit routeringskenmerk wordt in de deelnemerslijst meegeleverd. De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -2943,7 +3182,6 @@ components:
       - afnameleider
       - examen
       - examenkandidaat
-      - id
       - onderwijsorganisatie
       - planningsgegevens
       type: object
@@ -3061,10 +3299,12 @@ components:
             type: string
             description: <body><p>Omschrijving van de examenvariant.</p></body><body><p>De verzameling van waarden die gegevens van dit attribuutsoort kunnen hebben, dat wil zeggen het waardenbereik, uitgedrukt in een specifieke structuur.</p></body>
           typelabel:
-            title: typelabel
+            $ref: '#/components/schemas/Examenvarianttype'
+          necode:
+            title: necode
             pattern: ^[0-9]{5}$
             type: string
-            description: <body><p>Typering van de examenvariant. Partijen maken afspraken over de verschillende labels die gebruikt mogen worden en leggen deze afspraken vast in de vorm van vocabulaires.</p></body><body><p>NE-code (aka nex_id), bestaat uit 5 karakters</p></body>
+            description: <body><p>NE-code is een extra code die optioneel kan worden toegevoegd aan een examenvariant. Deze code is relevant om koppeling te kunnen houden met het WOI-bestand Wolf.</p></body><body><p>NE-code (aka nex_id), bestaat uit 5 karakters</p></body>
           url:
             title: url
             type: string
@@ -3087,7 +3327,7 @@ components:
       - examenvariant
       - id
       - onderwijsdeelnemeridentiteit
-      - scores
+      - score
       type: object
       properties:
         afnamecontext:
@@ -3108,10 +3348,8 @@ components:
           $ref: '#/components/schemas/Onderwijsdeelnemeridentiteit'
         resultaat:
           $ref: '#/components/schemas/Resultaat'
-        scores:
-          type: array
-          items:
-            $ref: '#/components/schemas/Score'
+        score:
+          $ref: '#/components/schemas/Score'
         examenvariant:
           title: examenvariant
           type: string
@@ -3364,8 +3602,6 @@ components:
           description: <body><p>Moment waarop het resultaat voor het laatst gewijzigd is.</p></body><body><p>Een uniek datumtijdstip uitgedrukt jaartal, maand, dag, uren, minuten en seconden volgens ISO 8601, bijvoorbeeld 2021-03-22T10:29Z.</p></body>
           format: date-time
           example: 2021-03-22T10:29:00Z
-        score:
-          $ref: '#/components/schemas/Score'
         typelabel:
           $ref: '#/components/schemas/CEVOResultaattype'
         waarde:
@@ -3435,16 +3671,6 @@ components:
     Referentieschaal:
       type: object
       properties:
-        maxscore:
-          title: maxscore
-          type: string
-          description: <body><p>De maximale score van de schaal.</p></body><body><p>De verzameling van waarden die gegevens van dit attribuutsoort kunnen hebben, dat wil zeggen het waardenbereik, uitgedrukt in een specifieke structuur.</p></body>
-          example: "68"
-        minscore:
-          title: minscore
-          type: string
-          description: <body><p>De minimale score van de schaal.</p></body><body><p>De verzameling van waarden die gegevens van dit attribuutsoort kunnen hebben, dat wil zeggen het waardenbereik, uitgedrukt in een specifieke structuur.</p></body>
-          example: "0"
         referentietoelichting:
           title: referentietoelichting
           type: string
@@ -3489,6 +3715,10 @@ components:
       - CSPE
       - PRETEST
       - POSTTEST
+    Examenvarianttype:
+      type: string
+      enum:
+      - Examenvariant
     Geslachttype:
       type: string
       description: <body><ul><li>`M` - Man</li><li>`V` - Vrouw</li><li>`O` - Ontbrekend / Niet gespecificeerd</li></ul></body>
