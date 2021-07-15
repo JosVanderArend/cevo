@@ -2,13 +2,13 @@
 openapi: 3.0.0
 info:
   title: Centrale-Examens-VO
-  description: OAS3-definities op 10 juni 2021 gemaakt, ter correctie van versie 01.01.05.
+  description: OAS3-definities op 2 juli 2021 gemaakt, waarde VOORBEELDEXAMEN toegevoegd aan enumeratie Examentype t.o.v. versie 01.01.06.
   contact:
     url: https://github.com/edustandaard/Centrale-Examens-VO
   license:
     name: European Union Public License, version 1.2 (EUPL-1.2)
     url: https://eupl.eu/1.2/nl/
-  version: 01.01.06
+  version: 01.01.07
   x-imvertor-generator-version: 1.64.0
   x-yamlCompiler-stylesheets-version: "20191021"
 servers:
@@ -1063,6 +1063,7 @@ paths:
       parameters:
       - name: sector
         in: query
+        description: <body><p>De onderwijssector van deze uitwisseling.</p></body>
         required: true
         style: form
         explode: true
@@ -3303,6 +3304,7 @@ components:
           type: string
           description: <body><p>Voorvoegsel bij de achternaam van de medewerker.</p></body>
           example: van de
+      description: <body><p>Verzameling van gegevens bij een afnameleider.</p></body>
     Examen:
       allOf:
       - $ref: '#/components/schemas/Toetseenheid'
@@ -3519,7 +3521,6 @@ components:
           type: string
           description: <body><p>De tijdsperiode (begintijd en eindtijd) waarbinnen de afname kan worden gepland.</p></body><body><p>Een tijdsperiode uitgedrukt in begintijdstip en eindtijdstip gescheiden door slash, volgens ISO 8601, bijvoorbeeld 2021-03-24T09:00:00Z/2021-03-24T17:00:00Z.</p></body>
           format: date-time
-          example: 2021-03-22T10:29:00Z
         begintijdAfname:
           title: begintijdAfname
           type: string
@@ -3531,7 +3532,6 @@ components:
           type: string
           description: <body><p>De tijdsduur van de afname in uren en minuten.</p></body><body><p>Een tijdsduur uitgedrukt uren, minuten en seconden volgens ISO 8601, bijvoorbeeld PT2H30M0S of PT2H30M of PT0H150M zijn geldige waarden voor 2,5 uur.</p></body>
           format: date-time
-          example: "PT2H30M"
         examenregime:
           title: examenregime
           pattern: ^[0-9]{4}$
@@ -3613,7 +3613,7 @@ components:
             $ref: '#/components/schemas/Onderwijsdeelnemeridentiteit'
         weergavekenmerken:
           $ref: '#/components/schemas/Weergavekenmerken'
-      description: <body><p>Individu die deelneemt aan onderwijs.</p></body>
+      description: <body><p>Verzameling van gegevens bij een examenkandidaat.</p></body>
     Onderwijsdeelnemeridentiteit:
       required:
       - typelabel
@@ -3660,6 +3660,7 @@ components:
           format: date-time
         afnamesoort:
           $ref: '#/components/schemas/Afnamesoort'
+      description: <body><p>Verzameling van planningsgegevens bij een afnamegroep.</p></body>
     Resultaat:
       required:
       - typelabel
@@ -3785,6 +3786,7 @@ components:
       - CSPE
       - PRETEST
       - POSTTEST
+      - VOORBEELDEXAMEN
     Examenvarianttype:
       type: string
       enum:
