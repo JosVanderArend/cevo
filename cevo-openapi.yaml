@@ -2,13 +2,13 @@
 openapi: 3.0.0
 info:
   title: Centrale-Examens-VO
-  description: OAS3-definities op 6 oktober 2021 gemaakt n.a.v. implementatieoverleg dezelfde ochtend, gebaseerd op de berichtenspecificaties Centrale-Examens-VO. Ten opzichte van voorgaande versie (1) zijn niveau en leerjaar toegevoegd aan Examenkandidaat, (2) is waarde CHE toegevoegd aan enumeratie Examentype en (3) wordt duurAfname binnen Examenafnamecondities alleen in minuten uitgedrukt.
   contact:
+  description: OAS3-definities op 11 oktober 2021 gemaakt n.a.v. de e-maildiscussies na het implementatieoverleg van 6 oktoberen, gebaseerd op de berichtenspecificaties Centrale-Examens-VO. Ten opzichte van voorgaande versie zijn de wijzigingen (1) niveau is verplaatst van Curriculum naar Examen, (2) vak is verplaatst van Curriculum naar Examen en hernoemd naar vakken (kan meerdere keren voorkomen), (3) Curriculum is verwijderd uit Examen, (4) duurAfname is nu van type integer, (5) betekenis van niveau en leerjaar binnen Examenkandidaat zijn verduidelijkt en (6) waarde VO-VBO binnen enumeratie NiveauVO is verwijderd.
     url: https://github.com/edustandaard/Centrale-Examens-VO
   license:
     name: European Union Public License, version 1.2 (EUPL-1.2)
     url: https://eupl.eu/1.2/nl/
-  version: 01.01.08
+  version: 01.01.09
   x-imvertor-generator-version: 1.64.0
   x-yamlCompiler-stylesheets-version: "20191021"
 servers:
@@ -3310,23 +3310,22 @@ components:
       - $ref: '#/components/schemas/Toetseenheid'
       - required:
         - afnamecondities
-        - curriculum
         - naam
+        - niveau
         - typelabel
         - versie
+        - vakken
         type: object
         properties:
           afnamecondities:
             $ref: '#/components/schemas/Examenafnamecondities'
-          curriculum:
-            type: array
-            items:
-              $ref: '#/components/schemas/Curriculum'
           naam:
             title: naam
             minLength: 1
             type: string
             description: <body><p>Naam van het examen.</p></body>
+          niveau:
+            $ref: '#/components/schemas/NiveauVO'
           omschrijving:
             title: omschrijving
             type: string
@@ -3338,12 +3337,21 @@ components:
             type: string
             description: <body><p>Url naar verdere informatie over het examen.</p></body>
             format: uri
+          vakken:
+            type: array
+            description: <body><p>Geeft aan waar in een opleiding (bij welke vakken) het examen geplaatst kan worden door vermelding van de betreffende vakcodes.</p></body><body><p>Vakcode bestaat uit 4 cijfers karakters obv DUO Vakcodetabel.</p></body>
+            minItems: 1
+            items:
+              type: string
+              pattern: ^[0-9]{4}$
+              minLength: 1
+              example: "1001"
           versie:
             title: versie
             minLength: 1
             type: string
             description: <body><p>Versie van het examen.</p></body>
-        description: <body><p>Materiaal dat gebruikt wordt bij het bepalen van de voortgang in ontwikkeling van de kennis en competenties van een onderwijsvolger.</p></body>
+        description: <body><p>Verzameling van gegevens bij een examen. Let op, de eigenschap niveau geeft het niveau van het examen aan.</p></body>
     Examenvariant:
       allOf:
       - $ref: '#/components/schemas/Toetseenheid'
@@ -3493,21 +3501,6 @@ components:
           description: <body><p>URL naar de (detail)resultaten, waarmee de verwerker van de resultaten inzicht kan verlenen in de gedetailleerde scores.</p></body><body><p>De verzameling van waarden die gegevens van dit attribuutsoort kunnen hebben, dat wil zeggen het waardenbereik, uitgedrukt in een specifieke structuur.</p></body>
           format: uri
       description: <body><p>URL die verwijst naar (detail)informatie in het systeem van de toetsleverancier.</p></body><body><p>Kan bijvoorbeeld verwijzen naar de resultaten of scores van individuele personen, of toegang geven tot resultaten of scores van items, indien beschikbaar bij de uitgever.</p></body>
-    Curriculum:
-      required:
-      - niveau
-      - vak
-      type: object
-      properties:
-        niveau:
-          $ref: '#/components/schemas/NiveauVO'
-        vak:
-          title: vak
-          pattern: ^[0-9]{4}$
-          type: string
-          description: <body><p>Geeft aan waar in een opleiding de toets geplaatst kan worden.</p></body><body><p>Vakcode bestaat uit 4 cijfers karakters obv DUO Vakcodetabel.</p></body>
-          example: "1001"
-      description: <body><p>Beschrijft de context waarbinnen een toets plaatsvindt, opdat de resultaten van de toets kunnen worden geïnterpreteerd in educatieve zin.</p></body>
     Examenafnamecondities:
       required:
       - afnameperiode
@@ -3529,9 +3522,8 @@ components:
           example: 2021-03-22T10:29:00Z
         duurAfname:
           title: duurAfname
-          type: string
-          description: <body><p>De tijdsduur van de afname in minuten.</p></body><body><p>Een tijdsduur uitgedrukt in minuten volgens ISO 8601, en niet in uren en/of seconden, begint altijd met PT en eindigt op M met het aantal minuten ertussen, bijvoorbeeld PT150M is geldig voor 2,5 uur (maar niet PT2H30M of PT0H150M).</p></body>
-          format: date-time
+          type: integer
+          description: <body><p>De tijdsduur van de afname in minuten.</p></body>
         examenregime:
           title: examenregime
           pattern: ^[0-9]{4}$
@@ -3617,7 +3609,7 @@ components:
             $ref: '#/components/schemas/Onderwijsdeelnemeridentiteit'
         weergavekenmerken:
           $ref: '#/components/schemas/Weergavekenmerken'
-      description: <body><p>Verzameling van gegevens bij een examenkandidaat.</p></body>
+      description: <body><p>Verzameling van gegevens bij een examenkandidaat. Let op, de eigenschappen niveau en leerjaar geven het niveau en het leerjaar van de opleiding/studie van de examenkandidaat aan. Bijvoorbeeld, als een havo 4 examenkandidaat plant voor afname van een vwo 6 examen dan wordt hier VO-HAVO en Leerjaar 4 ingevuld.</p></body>
     Onderwijsdeelnemeridentiteit:
       required:
       - typelabel
@@ -3816,11 +3808,10 @@ components:
       - LAS-key
     NiveauVO:
       type: string
-      description: <body><ul><li>`VO PRO` - VO-PRO</li><li>`VO HAVO` - VO-HAVO</li><li>`VO VBO` - VO-VBO</li><li>`VO VMBO BB` - VO-VMBO-BB</li><li>`VO VMBO GL` - VO-VMBO-GL</li><li>`VO VMBO KB` - VO-VMBO-KB</li><li>`VO VMBO TL` - VO-VMBO-TL</li><li>`VO VWO` - VO-VWO</li></ul></body>
+      description: <body><ul><li>`VO PRO` - VO-PRO</li><li>`VO HAVO` - VO-HAVO</li><li>`VO VMBO BB` - VO-VMBO-BB</li><li>`VO VMBO GL` - VO-VMBO-GL</li><li>`VO VMBO KB` - VO-VMBO-KB</li><li>`VO VMBO TL` - VO-VMBO-TL</li><li>`VO VWO` - VO-VWO</li></ul></body>
       enum:
       - VO PRO
       - VO HAVO
-      - VO VBO
       - VO VMBO BB
       - VO VMBO GL
       - VO VMBO KB
