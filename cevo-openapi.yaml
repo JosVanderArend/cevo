@@ -2,13 +2,13 @@
 openapi: 3.0.0
 info:
   title: Centrale-Examens-VO
-  description: OAS3-definities op 2 juli 2021 gemaakt, waarde VOORBEELDEXAMEN toegevoegd aan enumeratie Examentype t.o.v. versie 01.01.06.
+  description: OAS3-definities op 6 oktober 2021 gemaakt n.a.v. implementatieoverleg dezelfde ochtend, gebaseerd op de berichtenspecificaties Centrale-Examens-VO. Ten opzichte van voorgaande versie (1) zijn niveau en leerjaar toegevoegd aan Examenkandidaat, (2) is waarde CHE toegevoegd aan enumeratie Examentype en (3) wordt duurAfname binnen Examenafnamecondities alleen in minuten uitgedrukt.
   contact:
     url: https://github.com/edustandaard/Centrale-Examens-VO
   license:
     name: European Union Public License, version 1.2 (EUPL-1.2)
     url: https://eupl.eu/1.2/nl/
-  version: 01.01.07
+  version: 01.01.08
   x-imvertor-generator-version: 1.64.0
   x-yamlCompiler-stylesheets-version: "20191021"
 servers:
@@ -3530,7 +3530,7 @@ components:
         duurAfname:
           title: duurAfname
           type: string
-          description: <body><p>De tijdsduur van de afname in uren en minuten.</p></body><body><p>Een tijdsduur uitgedrukt uren, minuten en seconden volgens ISO 8601, bijvoorbeeld PT2H30M0S of PT2H30M of PT0H150M zijn geldige waarden voor 2,5 uur.</p></body>
+          description: <body><p>De tijdsduur van de afname in minuten.</p></body><body><p>Een tijdsduur uitgedrukt in minuten volgens ISO 8601, en niet in uren en/of seconden, begint altijd met PT en eindigt op M met het aantal minuten ertussen, bijvoorbeeld PT150M is geldig voor 2,5 uur (maar niet PT2H30M of PT0H150M).</p></body>
           format: date-time
         examenregime:
           title: examenregime
@@ -3607,6 +3607,10 @@ components:
           example: gebruikersnaam01
         geslacht:
           $ref: '#/components/schemas/Geslachttype'
+        niveau:
+          $ref: '#/components/schemas/NiveauVO'
+        leerjaar:
+          $ref: '#/components/schemas/Leerjaartype'
         onderwijsdeelnemeridentiteit:
           type: array
           items:
@@ -3784,6 +3788,7 @@ components:
       - CPE
       - CSE
       - CSPE
+      - CHE
       - PRETEST
       - POSTTEST
       - VOORBEELDEXAMEN
@@ -3821,6 +3826,15 @@ components:
       - VO VMBO KB
       - VO VMBO TL
       - VO VWO
+    Leerjaartype:
+      type: string
+      enum:
+      - "1"
+      - "2"
+      - "3"
+      - "4"
+      - "5"
+      - "6"
     OnderwijsSector:
       type: string
       enum:
