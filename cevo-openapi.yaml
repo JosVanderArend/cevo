@@ -1,14 +1,13 @@
----
 openapi: 3.0.0
 info:
   title: Centrale-Examens-VO
-  description: OAS3-definities op 2 november 2021 gemaakt n.a.v. de e-maildiscussies na het implementatieoverleg van 28 oktober, gebaseerd op de berichtenspecificaties Centrale-Examens-VO. Ten opzichte van voorgaande versie zijn de wijzigingen (1) niveau binnen Examen en Examenkandidaat is nu string (geen enum meer), (2) afnameperiode binnen Examen is opgesplitst in afnamepereiodeBegin en afnameperiodeEind, (3) alle gegevens m.b.t. hulpmiddelen zijn nu string (geen enum meer), (4) bij alle berichten met parameter sector is deze parameter verwijderd, (5) waarde AANGEWEZEN binnen enumeratie Examentype is toegevoegd.
+  description: "OAS3-definities op 26 november 2021 gemaakt n.a.v. de e-maildiscussies tussen betrokkenen op 24 en 25 november, gebaseerd op de berichtenspecificaties en modellen Centrale-Examens-VO. Ten opzichte van voorgaande versie zijn de wijzigingen (1) nTerm waardebereik van 0 tot 3 (was van 0 tot 2), (2) alle optionele eigenschappen worden nullable true (was default false), (3) niveau en leerjaar zijn verplicht bij Examenkandidaat (waren ten onrechte optioneel), (4) voorvoegsel is verwijderd uit Afnameleider en achternaam is verplicht bij Afnameleider (alleen id was verplicht) en (5) Bij POST afnamegroepen zijn examplarische voorbeelden toegevoegd waarbij het id bij een afnamegroep terecht ontbreekt."
   contact:
     url: https://github.com/edustandaard/Centrale-Examens-VO
   license:
     name: European Union Public License, version 1.2 (EUPL-1.2)
     url: https://eupl.eu/1.2/nl/
-  version: 01.01.10
+  version: 01.01.11
   x-imvertor-generator-version: 1.65.2
   x-yamlCompiler-stylesheets-version: "20210605"
 servers:
@@ -286,6 +285,77 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Afnamegroep'
+            examples:
+              voorbeeld-minimaal:
+                value:
+                  afnameleider: Afnameleider01
+                  examen: examen20220001
+                  examenkandidaat:
+                  - geboortedatum: '2001-11-18T07:53:36.544Z'
+                    gebruikersnaam: gebruikersnaam01
+                    geslacht: M
+                    niveau: "VO VMBO GL"
+                    leerjaar: '3'
+                    onderwijsdeelnemeridentiteit:
+                    - typelabel: ECK-iD
+                      waarde: eckid123
+                    weergavekenmerken:
+                      achternaam: Achternaam01
+                      voornaam: Voornaam01
+                      weergaveidentiteit: "Voornaam01 Achternaam01"
+                  onderwijsorganisatie:
+                    brin4: 99AA
+                    volgnummer: '00'
+                  planningsgegevens:
+                    afnamemoment: '2021-11-18T07:53:36.544Z'
+                    afnamesoort: Online
+              voorbeeld-maximaal:
+                value:
+                  afnameleider: Afnameleider02
+                  examen: examen20220001
+                  examenkandidaat:
+                  - benodigdeHulpmiddelen: 
+                    - Verklanking
+                    - Extratijd
+                    geboortedatum: '2002-11-18T07:53:36.544Z'
+                    gebruikersnaam: Gebruikersnaam02
+                    geslacht: V
+                    niveau: "VO VMBO BB"
+                    leerjaar: '6'
+                    onderwijsdeelnemeridentiteit:
+                    - typelabel: ECK-iD
+                      waarde: eckid234
+                    - typelabel: LAS-key
+                      waarde: laskey234
+                    weergavekenmerken:
+                      achternaam: Achternaam02
+                      voornaam: Voornaam02
+                      voorvoegsel: van de
+                      weergaveidentiteit: "Voornaam02 van de Achternaam02"
+                  - benodigdeHulpmiddelen: 
+                    - Spellingscontrole
+                    - Extratijd
+                    geboortedatum: '2003-11-18T07:53:36.544Z'
+                    gebruikersnaam: Gebruikersnaam03
+                    geslacht: M
+                    niveau: "VO VWO"
+                    leerjaar: '1'
+                    onderwijsdeelnemeridentiteit:
+                    - typelabel: ECK-iD
+                      waarde: eckid345
+                    - typelabel: LAS-key
+                      waarde: laskey345
+                    weergavekenmerken:
+                      achternaam: Achternaam03
+                      voornaam: Voornaam03
+                      voorvoegsel: van de
+                      weergaveidentiteit: "Voornaam03 van de Achternaam03"
+                  onderwijsorganisatie:
+                    brin4: 99AA
+                    volgnummer: '00'
+                  planningsgegevens:
+                    afnamemoment: '2021-11-18T07:53:36.544Z'
+                    afnamesoort: Offline
       responses:
         "201":
           description: OK
@@ -3198,13 +3268,14 @@ components:
       description: <body><p>Verzameling van gegevens bij een afnamegroep.</p></body>
     Afnameleider:
       required:
+      - achternaam
       - id
       type: object
       properties:
         achternaam:
           title: achternaam
           type: string
-          description: <body><p>Achternaam van de medewerker.</p></body>
+          description: <body><p>Achternaam van de medewerker, inclusief voorvoegsel.</p></body>
           example: Achternaam01
         id:
           title: id
@@ -3217,11 +3288,7 @@ components:
           type: string
           description: <body><p>Roepnaam van de medewerker.</p></body>
           example: Roepnaam01
-        voorvoegsel:
-          title: voorvoegsel
-          type: string
-          description: <body><p>Voorvoegsel bij de achternaam van de medewerker.</p></body>
-          example: van de
+          nullable : true
       description: <body><p>Verzameling van gegevens bij een afnameleider.</p></body>
     Examen:
       allOf:
@@ -3257,6 +3324,7 @@ components:
             title: omschrijving
             type: string
             description: <body><p>Omschrijving van het examen.</p></body>
+            nullable : true
           typelabel:
             $ref: '#/components/schemas/Examentype'
           url:
@@ -3264,6 +3332,7 @@ components:
             type: string
             description: <body><p>Url naar verdere informatie over het examen.</p></body>
             format: uri
+            nullable : true
           vakken:
             type: array
             description: <body><p>Geeft aan waar in een opleiding (bij welke vakken) het examen geplaatst kan worden door vermelding van de betreffende vakcodes.</p></body><body><p>Vakcode bestaat uit 4 cijfers karakters obv DUO Vakcodetabel.</p></body>
@@ -3307,6 +3376,7 @@ components:
             title: omschrijving
             type: string
             description: <body><p>Omschrijving van de examenvariant.</p></body><body><p>De verzameling van waarden die gegevens van dit attribuutsoort kunnen hebben, dat wil zeggen het waardenbereik, uitgedrukt in een specifieke structuur.</p></body>
+            nullable : true
           typelabel:
             $ref: '#/components/schemas/Examenvarianttype'
           necode:
@@ -3314,11 +3384,13 @@ components:
             pattern: ^[0-9]{5}$
             type: string
             description: <body><p>NE-code is een extra code die optioneel kan worden toegevoegd aan een examenvariant. Deze code is relevant om koppeling te kunnen houden met het WOI-bestand Wolf.</p></body><body><p>NE-code (aka nex_id), bestaat uit 5 karakters</p></body>
+            nullable : true
           url:
             title: url
             type: string
             description: <body><p>Url naar verdere informatie over de examenvariant.</p></body><body><p>De verzameling van waarden die gegevens van dit attribuutsoort kunnen hebben, dat wil zeggen het waardenbereik, uitgedrukt in een specifieke structuur.</p></body>
             format: uri
+            nullable : true
           versie:
             title: versie
             minLength: 1
@@ -3354,6 +3426,7 @@ components:
           description: <body><p>Datum en tijdstip waarop de verzameling resultaten en scores is samengesteld.</p></body><body><p>Een uniek datumtijdstip uitgedrukt jaartal, maand, dag, uren, minuten en seconden volgens ISO 8601, bijvoorbeeld 2021-03-22T10:29Z.</p></body>
           format: date-time
           example: 2021-03-10T13:00:00Z
+          nullable : true
         id:
           title: id
           minLength: 1
@@ -3389,6 +3462,7 @@ components:
           description: <body><p>Datum en tijdstip waarop de afname plaatsvond.</p></body><body><p>Een uniek datumtijdstip uitgedrukt jaartal, maand, dag, uren, minuten en seconden volgens ISO 8601, bijvoorbeeld 2021-03-22T10:29Z.</p></body>
           format: date-time
           example: 2021-03-22T10:29:00Z
+          nullable : true
         id:
           title: id
           minLength: 1
@@ -3400,14 +3474,17 @@ components:
           type: string
           description: <body><p>URL naar het afnameprotocol.</p></body><body><p>De verzameling van waarden die gegevens van dit attribuutsoort kunnen hebben, dat wil zeggen het waardenbereik, uitgedrukt in een specifieke structuur.</p></body>
           format: uri
+          nullable : true
         protocoltext:
           title: protocoltext
           type: string
           description: <body><p>Tekstuele weergave van het afnameprotocol.</p></body><body><p>De verzameling van waarden die gegevens van dit attribuutsoort kunnen hebben, dat wil zeggen het waardenbereik, uitgedrukt in een specifieke structuur.</p></body>
+          nullable : true
         resultaatverwerker:
           title: resultaatverwerker
           type: string
           description: <body><p>Aanduiding van de partij die de resultaten verwerkt.</p></body><body><p>De verzameling van waarden die gegevens van dit attribuutsoort kunnen hebben, dat wil zeggen het waardenbereik, uitgedrukt in een specifieke structuur.</p></body>
+          nullable : true
       description: <body><p>Gegevens over de wijze waarop het resultaat tot stand is gekomen. Elke afname heeft een eigen id.</p></body>
     Afnamecontext:
       type: object
@@ -3455,6 +3532,7 @@ components:
           description: <body><p>Het moment van begin van de afname.</p></body><body><p>Een uniek datumtijdstip uitgedrukt jaartal, maand, dag, uren, minuten en seconden volgens ISO 8601, bijvoorbeeld 2021-03-22T10:29Z.</p></body>
           format: date-time
           example: 2021-03-22T10:29:00Z
+          nullable : true
         duurAfname:
           title: duurAfname
           type: integer
@@ -3489,6 +3567,7 @@ components:
           type: integer
           description: <body><p>Numerieke aanduiding van het tijdvak waarin het examen plaatsvindt. Indien niet gevuld is het examen niet gebonden aan een tijdvak.</p></body>
           example: 1
+          nullable : true
     Examencijferberekening:
       allOf:
       - $ref: '#/components/schemas/Referentieschaal'
@@ -3504,22 +3583,26 @@ components:
       properties:
         nTerm:
           title: n-term
-          maximum: 2
+          maximum: 3
           minimum: 0
           type: number
           description: '<body><p>De normeringsterm (N), vast te stellen door het College voor examens middels een normeringsbeslissing.</p></body><body><p>Liggend tussen de waarden: N = 0.0 en N = 2.0.</p></body>'
           example: 1
+          nullable : true
         schaallengte:
           title: schaallengte
           type: integer
           description: <body><p>De lengte van de scoreschaal (L), zoals vastgelegd in het correctievoorschrift.</p></body>
           example: 68
+          nullable : true
       description: <body><p>De parameters (N-term en schaallengte) die bij de berekening van het examencijfer worden betrokken.</p></body>
     Examenkandidaat:
       required:
       - geboortedatum
       - gebruikersnaam
       - geslacht
+      - leerjaar
+      - niveau
       - onderwijsdeelnemeridentiteit
       - weergavekenmerken
       type: object
@@ -3545,13 +3628,13 @@ components:
           example: gebruikersnaam01
         geslacht:
           $ref: '#/components/schemas/Geslachttype'
+        leerjaar:
+          $ref: '#/components/schemas/Leerjaartype'
         niveau:
           type: string
           title: niveau
           description: "<body><p>Het niveau van de examenkandidaat. Gebruik hiervoor het enkelvoudige niveau van de opleiding waarvoor de kandidaat is ingeschreven. Er zijn afspraken gemaakt over de verschillende waarden die gebruikt zullen worden en dit is vastgelegd in de enumeratie NiveauVO. Deze enumeratie is niet bindend, d.w.z. kan in overleg worden aangepast.</p></body>"
           minLength: 1
-        leerjaar:
-          $ref: '#/components/schemas/Leerjaartype'
         onderwijsdeelnemeridentiteit:
           type: array
           items:
@@ -3618,6 +3701,7 @@ components:
           description: <body><p>Moment waarop het resultaat voor het laatst gewijzigd is.</p></body><body><p>Een uniek datumtijdstip uitgedrukt jaartal, maand, dag, uren, minuten en seconden volgens ISO 8601, bijvoorbeeld 2021-03-22T10:29Z.</p></body>
           format: date-time
           example: 2021-03-22T10:29:00Z
+          nullable : true
         typelabel:
           $ref: '#/components/schemas/CEVOResultaattype'
         waarde:
@@ -3645,6 +3729,7 @@ components:
           description: <body><p>Moment waarop de score voor het laatst gewijzigd is.</p></body><body><p>Een uniek datumtijdstip uitgedrukt jaartal, maand, dag, uren, minuten en seconden volgens ISO 8601, bijvoorbeeld 2021-03-22T10:29Z.</p></body>
           format: date-time
           example: 2021-03-22T10:29:00Z
+          nullable : true
         typelabel:
           $ref: '#/components/schemas/CEVOScoretype'
         waarde:
@@ -3677,6 +3762,7 @@ components:
           type: string
           description: <body><p>Voorvoegsel bij de achternaam van de examenkandidaat die op het scherm wordt weergegeven, t.b.v. controle door de examenleider.</p></body><body><p>De verzameling van waarden die gegevens van dit attribuutsoort kunnen hebben, dat wil zeggen het waardenbereik, uitgedrukt in een specifieke structuur.</p></body>
           example: van de
+          nullable : true
         weergaveidentiteit:
           title: weergaveidentiteit
           minLength: 1
@@ -3692,12 +3778,14 @@ components:
           type: string
           description: <body><p>Tekst met nadere uitleg over de herkomst van de referentieschaal en wijze van presentatie of gebruik.</p></body><body><p>De verzameling van waarden die gegevens van dit attribuutsoort kunnen hebben, dat wil zeggen het waardenbereik, uitgedrukt in een specifieke structuur.</p></body>
           example: Zie de Regeling omzetting scores in cijfers centrale examens en rekentoets VO 2016
+          nullable : true
         verwijzingReferentietoelichting:
           title: verwijzingReferentietoelichting
           type: string
           description: <body><p>Url naar tekst met nadere uitleg over de herkomst van de referentieschaal en wijze van presentatie of gebruik.</p></body><body><p>De verzameling van waarden die gegevens van dit attribuutsoort kunnen hebben, dat wil zeggen het waardenbereik, uitgedrukt in een specifieke structuur.</p></body>
           format: uri
           example: https://wetten.overheid.nl/BWBR0037590/2020-01-01
+          nullable : true
       description: <body><p>Instrument om scores te plaatsen op een schaal.</p></body>
     Toetseenheid:
       required:
@@ -3776,23 +3864,29 @@ components:
           type: string
           description: Link naar meer informatie over deze fout
           format: uri
+          nullable : true
         title:
           type: string
           description: Beschrijving van de fout
+          nullable : true
         status:
           type: integer
           description: Http status code
+          nullable : true
         detail:
           type: string
           description: Details over de fout
+          nullable : true
         instance:
           type: string
           description: Uri van de aanroep die de fout heeft veroorzaakt
           format: uri
+          nullable : true
         code:
           minLength: 1
           type: string
           description: Systeemcode die het type fout aangeeft
+          nullable : true
       description: Terugmelding bij een fout. JSON representatie in lijn met [RFC7807](https://tools.ietf.org/html/rfc7807).
     InvalidParams:
       type: object
@@ -3801,19 +3895,23 @@ components:
           type: string
           format: uri
           example: https://www.edustandaard.nl/amigo/api/{major-versie}/validaties/integer
+          nullable : true
         name:
           type: string
           description: Naam van de parameter
           example: verblijfplaats__huisnummer
+          nullable : true
         code:
           minLength: 1
           type: string
           description: Systeemcode die het type fout aangeeft
           example: integer
+          nullable : true
         reason:
           type: string
           description: Beschrijving van de fout op de parameterwaarde
           example: Waarde is geen geldige integer.
+          nullable : true
       description: Details over fouten in opgegeven parameters
   headers:
     api_version:
@@ -3821,11 +3919,13 @@ components:
         type: string
         description: Geeft een specifieke API-versie aan in de context van een specifieke aanroep.
         example: 1.0.0
+        nullable : true
     warning:
       schema:
         type: string
         description: zie RFC 7234. In het geval een major versie wordt uitgefaseerd, gebruiken we warn-code 299 ("Miscellaneous Persistent Warning") en het API end-point (inclusief versienummer) als de warn-agent van de warning, gevolgd door de warn-text met de human-readable waarschuwing
         example: '299 https://service.../api/.../v1 "Deze versie van de API is verouderd en zal uit dienst worden genomen op 2018-02-01. Raadpleeg voor meer informatie hier de documentatie: https://omgevingswet.../api/.../v1".'
+        nullable : true
     X_Rate_Limit_Limit:
       schema:
         type: integer
