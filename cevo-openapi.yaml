@@ -2,15 +2,15 @@
 openapi: 3.0.0
 info:
   title: Centrale-Examens-VO
+  description: OAS3-definities op 2 november 2021 gemaakt n.a.v. de e-maildiscussies na het implementatieoverleg van 28 oktober, gebaseerd op de berichtenspecificaties Centrale-Examens-VO. Ten opzichte van voorgaande versie zijn de wijzigingen (1) niveau binnen Examen en Examenkandidaat is nu string (geen enum meer), (2) afnameperiode binnen Examen is opgesplitst in afnamepereiodeBegin en afnameperiodeEind, (3) alle gegevens m.b.t. hulpmiddelen zijn nu string (geen enum meer), (4) bij alle berichten met parameter sector is deze parameter verwijderd, (5) waarde AANGEWEZEN binnen enumeratie Examentype is toegevoegd.
   contact:
-  description: OAS3-definities op 11 oktober 2021 gemaakt n.a.v. de e-maildiscussies na het implementatieoverleg van 6 oktoberen, gebaseerd op de berichtenspecificaties Centrale-Examens-VO. Ten opzichte van voorgaande versie zijn de wijzigingen (1) niveau is verplaatst van Curriculum naar Examen, (2) vak is verplaatst van Curriculum naar Examen en hernoemd naar vakken (kan meerdere keren voorkomen), (3) Curriculum is verwijderd uit Examen, (4) duurAfname is nu van type integer, (5) betekenis van niveau en leerjaar binnen Examenkandidaat zijn verduidelijkt en (6) waarde VO-VBO binnen enumeratie NiveauVO is verwijderd.
     url: https://github.com/edustandaard/Centrale-Examens-VO
   license:
     name: European Union Public License, version 1.2 (EUPL-1.2)
     url: https://eupl.eu/1.2/nl/
-  version: 01.01.09
-  x-imvertor-generator-version: 1.64.0
-  x-yamlCompiler-stylesheets-version: "20191021"
+  version: 01.01.10
+  x-imvertor-generator-version: 1.65.2
+  x-yamlCompiler-stylesheets-version: "20210605"
 servers:
 - url: https://facet.nl/api/centrale_examens_vo/v00
   description: Facet API Auto Mocking
@@ -23,14 +23,6 @@ paths:
       - Facet
       operationId: getcollectiongroepen
       parameters:
-      - name: sector
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          $ref: '#/components/schemas/OnderwijsSector'
-        example: VO
       - name: brin4
         in: query
         description: <body><p>BRIN4 identificatie van de school.</p></body><body><p>Het BRIN4 bestaat uit 2 cijfers gevolgd door 2 letters.</p></body>
@@ -269,14 +261,6 @@ paths:
       - Facet
       operationId: postafnamegroepen
       parameters:
-      - name: sector
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          $ref: '#/components/schemas/OnderwijsSector'
-        example: VO
       - name: edu-to
         in: query
         description: Dit geeft aan namens welke organisatie Facet het verzoekbericht ontvangt. Dit is in dit geval het OIN van de school. De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -511,14 +495,6 @@ paths:
         schema:
           type: string
         example: afnamegroep-abc123
-      - name: sector
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          $ref: '#/components/schemas/OnderwijsSector'
-        example: VO
       - name: edu-to
         in: query
         description: Dit geeft aan namens welke organisatie Facet het verzoekbericht ontvangt. Dit is in dit geval het OIN van de school. De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -761,14 +737,6 @@ paths:
         schema:
           type: string
         example: afnamegroep-abc123
-      - name: sector
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          $ref: '#/components/schemas/OnderwijsSector'
-        example: VO
       - name: edu-to
         in: query
         description: Dit geeft aan namens welke organisatie Facet het verzoekbericht ontvangt. Dit is in dit geval het OIN van de school. De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -830,14 +798,6 @@ paths:
         schema:
           type: string
         example: afnamegroep-abc123
-      - name: sector
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          $ref: '#/components/schemas/OnderwijsSector'
-        example: VO
       - name: edu-to
         in: query
         description: Dit geeft aan namens welke organisatie Facet het verzoekbericht ontvangt. Dit is in dit geval het OIN van de school. De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -1061,15 +1021,6 @@ paths:
       - Facet
       operationId: getcollectionafnameleiders
       parameters:
-      - name: sector
-        in: query
-        description: <body><p>De onderwijssector van deze uitwisseling.</p></body>
-        required: true
-        style: form
-        explode: true
-        schema:
-          $ref: '#/components/schemas/OnderwijsSector'
-        example: VO
       - name: brin4
         in: query
         description: <body><p>BRIN4 identificatie van de school.</p></body><body><p>Het BRIN4 bestaat uit 2 cijfers gevolgd door 2 letters.</p></body>
@@ -1317,14 +1268,6 @@ paths:
         schema:
           type: string
         example: afnameleider-abc123
-      - name: sector
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          $ref: '#/components/schemas/OnderwijsSector'
-        example: VO
       - name: edu-to
         in: query
         description: Dit geeft aan namens welke organisatie Facet het verzoekbericht ontvangt. Dit is in dit geval het OIN van de school. De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -1568,14 +1511,6 @@ paths:
         schema:
           type: string
           example: "2022"
-      - name: sector
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          $ref: '#/components/schemas/OnderwijsSector'
-        example: VO
       - name: edu-to
         in: query
         description: Dit geeft aan namens welke organisatie Facet het verzoekbericht ontvangt. Dit is in dit geval het OIN van CvTE. De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -2274,14 +2209,6 @@ paths:
         schema:
           type: string
         example: examen-abc123
-      - name: sector
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          $ref: '#/components/schemas/OnderwijsSector'
-        example: VO
       - name: brin4
         in: query
         description: <body><p>BRIN4 identificatie van de school.</p></body><body><p>Het BRIN4 bestaat uit 2 cijfers gevolgd door 2 letters.</p></body>
@@ -2530,15 +2457,6 @@ paths:
         schema:
           type: string
           example: "2022"
-      - name: sector
-        in: query
-        description: <body><p>De verzameling van waarden die gegevens van dit attribuutsoort kunnen hebben, dat wil zeggen het waardenbereik, uitgedrukt in een specifieke structuur.</p></body>
-        required: true
-        style: form
-        explode: true
-        schema:
-          $ref: '#/components/schemas/OnderwijsSector'
-        example: VO
       - name: edu-to
         in: query
         description: Dit geeft aan namens welke organisatie Facet het verzoekbericht ontvangt. Dit is in dit geval het OIN van CvTE. De waarde is 20 karakters lang. Deze parameter is verplicht volgens de Edukoppeling REST/SaaS-profiel.
@@ -3325,7 +3243,16 @@ components:
             type: string
             description: <body><p>Naam van het examen.</p></body>
           niveau:
-            $ref: '#/components/schemas/NiveauVO'
+            type: string
+            title: niveau
+            description: "<body><p>Typering van het niveau van het examen. Er zijn\
+              \ afspraken gemaakt over de verschillende waarden die gebruikt zullen\
+              \ worden en dit is vastgelegd in de enumeratie NiveauVO. Deze enumeratie\
+              \ is niet bindend, d.w.z. kan in overleg worden aangepast.</p></body><body><p>De\
+              \ verzameling van waarden die gegevens van dit attribuutsoort kunnen\
+              \ hebben, dat wil zeggen het waardenbereik, uitgedrukt in een specifieke\
+              \ structuur.</p></body>"
+            minLength: 1
           omschrijving:
             title: omschrijving
             type: string
@@ -3503,17 +3430,25 @@ components:
       description: <body><p>URL die verwijst naar (detail)informatie in het systeem van de toetsleverancier.</p></body><body><p>Kan bijvoorbeeld verwijzen naar de resultaten of scores van individuele personen, of toegang geven tot resultaten of scores van items, indien beschikbaar bij de uitgever.</p></body>
     Examenafnamecondities:
       required:
-      - afnameperiode
+      - afnameperiodeBegin
+      - afnameperiodeEind
       - duurAfname
       - examenregime
       - inplanbaar
       type: object
       properties:
-        afnameperiode:
-          title: afnameperiode
+        afnameperiodeBegin:
           type: string
-          description: <body><p>De tijdsperiode (begintijd en eindtijd) waarbinnen de afname kan worden gepland.</p></body><body><p>Een tijdsperiode uitgedrukt in begintijdstip en eindtijdstip gescheiden door slash, volgens ISO 8601, bijvoorbeeld 2021-03-24T09:00:00Z/2021-03-24T17:00:00Z.</p></body>
+          title: afnameperiodeBegin
+          description: "<body><p>De begintijd (inclusief datum) van de tijdsperiode waarbinnen de afname kan worden gepland.</p></body><body><p>Een tijdsperiode uitgedrukt in tijdstip volgens ISO 8601, bijvoorbeeld 2021-03-24T09:00:00Z.</p></body>"
           format: date-time
+          example: "2021-03-24T09:00:00Z"
+        afnameperiodeEind:
+          type: string
+          title: afnameperiodeEind
+          description: "<body><p>De begintijd (inclusief datum) van de tijdsperiode waarbinnen de afname kan worden gepland.</p></body><body><p>Een tijdsperiode uitgedrukt in tijdstip volgens ISO 8601, bijvoorbeeld 2021-03-24T17:00:00Z.</p></body>"
+          format: date-time
+          example: "2021-03-24T17:00:00Z"
         begintijdAfname:
           title: begintijdAfname
           type: string
@@ -3532,15 +3467,23 @@ components:
           example: "2022"
         individueleHulpmiddelen:
           type: array
+          title: individueleHulpmiddelen
+          description: "<body><p>De lijst van hulpmiddelen die individueel toegestaan\
+            \ zijn voor het examen.</p><p>Er zijn  afspraken gemaakt over de verschillende waarden die gebruikt zullen worden en dit is vastgelegd in de enumeratie HulpmiddelenSoort. Deze enumeratie is niet bindend, d.w.z. kan in overleg worden aangepast.</p></body>"
+          minItems: 0
           items:
-            $ref: '#/components/schemas/HulpmiddelenSoort'
+            type: string
         inplanbaar:
           title: inplanbaar
           type: boolean
         standaardHulpmiddelen:
           type: array
+          title: standaardHulpmiddelen
+          description: "<body><p>De lijst van hulpmiddelen die standaard toegestaan\
+            \ zijn voor het examen.</p><p>Er zijn  afspraken gemaakt over de verschillende waarden die gebruikt zullen worden en dit is vastgelegd in de enumeratie HulpmiddelenSoort. Deze enumeratie is niet bindend, d.w.z. kan in overleg worden aangepast.</p></body>"
+          minItems: 0
           items:
-            $ref: '#/components/schemas/HulpmiddelenSoort'
+            type: string
         tijdvak:
           title: tijdvak
           type: integer
@@ -3583,24 +3526,30 @@ components:
       properties:
         benodigdeHulpmiddelen:
           type: array
+          title: benodigdeHulpmiddelen
+          description: "<body><p>De lijst van hulpmiddelen die de examenkandidaat nodig heeft om het examen te maken.</p><p>Er zijn  afspraken gemaakt over de verschillende waarden die gebruikt zullen worden en dit is vastgelegd in de enumeratie HulpmiddelenSoort. Deze enumeratie is niet bindend, d.w.z. kan in overleg worden aangepast.</p></body>"
+          minItems: 0
           items:
-            $ref: '#/components/schemas/HulpmiddelenSoort'
+            type: string
         geboortedatum:
           title: geboortedatum
           type: string
-          description: <body><p>De geboortedatum van de examenkandidaat.</p></body><body><p>Een datum uitgedrukt jaartal, maand en dag volgens ISO 8601, bijvoorbeeld 2021-03-22.</p></body>
+          description: "<body><p>De geboortedatum van de examenkandidaat.</p></body><body><p>Een datum uitgedrukt jaartal, maand en dag volgens ISO 8601, bijvoorbeeld 2021-03-22.</p></body>"
           format: date
           example: 2001-03-22
         gebruikersnaam:
           title: gebruikersnaam
           minLength: 1
           type: string
-          description: <body><p>De verzameling van waarden die gegevens van dit attribuutsoort kunnen hebben, dat wil zeggen het waardenbereik, uitgedrukt in een specifieke structuur.</p></body>
+          description: "<body><p>De gebruikersnaam waarmee de kandidaat inlogt in Facet.</p></body><body><p>De verzameling van waarden die gegevens van dit attribuutsoort kunnen hebben, dat wil zeggen het waardenbereik, uitgedrukt in een specifieke structuur.</p></body>"
           example: gebruikersnaam01
         geslacht:
           $ref: '#/components/schemas/Geslachttype'
         niveau:
-          $ref: '#/components/schemas/NiveauVO'
+          type: string
+          title: niveau
+          description: "<body><p>Het niveau van de examenkandidaat. Gebruik hiervoor het enkelvoudige niveau van de opleiding waarvoor de kandidaat is ingeschreven. Er zijn afspraken gemaakt over de verschillende waarden die gebruikt zullen worden en dit is vastgelegd in de enumeratie NiveauVO. Deze enumeratie is niet bindend, d.w.z. kan in overleg worden aangepast.</p></body>"
+          minLength: 1
         leerjaar:
           $ref: '#/components/schemas/Leerjaartype'
         onderwijsdeelnemeridentiteit:
@@ -3784,6 +3733,7 @@ components:
       - PRETEST
       - POSTTEST
       - VOORBEELDEXAMEN
+      - AANGEWEZEN
     Examenvarianttype:
       type: string
       enum:
@@ -3795,28 +3745,11 @@ components:
       - M
       - V
       - O
-    HulpmiddelenSoort:
-      type: string
-      enum:
-      - Spellingcontrole
-      - Extratijd
-      - Verklanking
     Identiteittype:
       type: string
       enum:
       - ECK-iD
       - LAS-key
-    NiveauVO:
-      type: string
-      description: <body><ul><li>`VO PRO` - VO-PRO</li><li>`VO HAVO` - VO-HAVO</li><li>`VO VMBO BB` - VO-VMBO-BB</li><li>`VO VMBO GL` - VO-VMBO-GL</li><li>`VO VMBO KB` - VO-VMBO-KB</li><li>`VO VMBO TL` - VO-VMBO-TL</li><li>`VO VWO` - VO-VWO</li></ul></body>
-      enum:
-      - VO PRO
-      - VO HAVO
-      - VO VMBO BB
-      - VO VMBO GL
-      - VO VMBO KB
-      - VO VMBO TL
-      - VO VWO
     Leerjaartype:
       type: string
       enum:
@@ -3826,14 +3759,6 @@ components:
       - "4"
       - "5"
       - "6"
-    OnderwijsSector:
-      type: string
-      enum:
-      - HO
-      - MBO
-      - PO
-      - VAVO
-      - VO
     BadRequestFoutbericht:
       allOf:
       - $ref: '#/components/schemas/Foutbericht'
